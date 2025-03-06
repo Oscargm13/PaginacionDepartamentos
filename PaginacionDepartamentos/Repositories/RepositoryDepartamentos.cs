@@ -10,6 +10,27 @@ as
 select cast (ROW_NUMBER() over (order by DEPT_NO)as int) AS POSICION
 , DEPT_NO, DNOMBRE, LOC from DEPT
 go
+
+CREATE PROCEDURE SP_PAGINAR_EMPLEADOS_DEPARTAMENTO
+    @posicion INT,
+    @iddepartamento INT,
+    @registros INT OUTPUT
+AS
+BEGIN
+    -- ALMACENAMOS EL NUMERO DE REGISTROS DEL FILTRO
+    SELECT @registros = COUNT(EMP_NO) FROM EMP WHERE DEPT_NO = @iddepartamento;
+
+    SELECT EMP_NO, APELLIDO, OFICIO, SALARIO, DEPT_NO
+    FROM (
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY APELLIDO) AS POSICION,
+            EMP_NO, APELLIDO, OFICIO, SALARIO, DEPT_NO
+        FROM EMP
+        WHERE DEPT_NO = @iddepartamento
+    ) AS query
+    WHERE POSICION >= @posicion AND POSICION < (@posicion + 1);
+END;
+GO
  */
 #endregion
 namespace PaginacionDepartamentos.Repositories
