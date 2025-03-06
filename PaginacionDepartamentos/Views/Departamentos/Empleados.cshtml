@@ -1,0 +1,70 @@
+﻿@model List<Empleado>
+
+@{
+    ViewData["Title"] = "Empleados";
+    int registrosPorPagina = 1; // Ajusta según tus necesidades
+    int totalRegistros = (int)ViewData["REGISTROS"];
+    int numeroPaginas = (int)Math.Ceiling((double)totalRegistros / registrosPorPagina);
+    int paginaActual = (int?)ViewContext.RouteData.Values["posicion"] ?? 1;
+    int idDepartamento = (int)ViewData["IDDEPARTAMENTO"];
+}
+
+<h1>Empleados del Departamento @idDepartamento</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Apellido</th>
+            <th>Oficio</th>
+            <th>Salario</th>
+            <th>Departamento</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var empleado in Model)
+        {
+            <tr>
+                <td>@empleado.EMP_NO</td>
+                <td>@empleado.APELLIDO</td>
+                <td>@empleado.OFICIO</td>
+                <td>@empleado.SALARIO</td>
+                <td>@empleado.DEPT_NO</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        @if (paginaActual > 1)
+        {
+            <li class="page-item"><a class="page-link" asp-action="Empleados" asp-route-posicion="@(paginaActual - 1)" asp-route-idDepartamento="@idDepartamento">Anterior</a></li>
+        }
+        else
+        {
+            <li class="page-item disabled"><a class="page-link" href="#">Anterior</a></li>
+        }
+
+        @for (int i = 1; i <= numeroPaginas; i++)
+        {
+            if (i == paginaActual)
+            {
+                <li class="page-item active"><a class="page-link" href="#">@i</a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" asp-action="Empleados" asp-route-posicion="@i" asp-route-idDepartamento="@idDepartamento">@i</a></li>
+            }
+        }
+
+        @if (paginaActual < numeroPaginas)
+        {
+            <li class="page-item"><a class="page-link" asp-action="Empleados" asp-route-posicion="@(paginaActual + 1)" asp-route-idDepartamento="@idDepartamento">Siguiente</a></li>
+        }
+        else
+        {
+            <li class="page-item disabled"><a class="page-link" href="#">Siguiente</a></li>
+        }
+    </ul>
+</nav>

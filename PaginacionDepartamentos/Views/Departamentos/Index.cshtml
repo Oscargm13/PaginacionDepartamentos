@@ -1,0 +1,16 @@
+﻿@model List<Departamento>
+
+@{
+    ViewData["Title"] = "Departamentos";
+}
+
+<h1>Departamentos</h1>
+
+<ul class="list-group">
+    @foreach (var departamento in Model)
+    {
+        <li class="list-group-item">
+            <a asp-action="Empleados" asp-route-idDepartamento="@departamento.IdDepartamento">@departamento.Nombre</a>
+        </li>
+    }
+</ul>
